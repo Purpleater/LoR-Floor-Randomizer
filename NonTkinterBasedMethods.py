@@ -1,5 +1,4 @@
 import random
-import tkinter
 from tkinter import messagebox
 
 # the only reason I have this file is so that there's less clutter than there already is in the main window file
