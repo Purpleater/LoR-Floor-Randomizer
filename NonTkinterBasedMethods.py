@@ -2,6 +2,10 @@ import random
 import tkinter
 from tkinter import messagebox
 
+# the only reason I have this file is so that there's less clutter than there already is in the main window file
+# I don't like too much clutter because then my ADHD causes me to space out when reading walls of text
+# What's not visible on GitHub is the metric-fuck-ton of collapsed regions I have on PyCharm.
+
 floorKey = {
     0: "General Works",
     1: "History",
@@ -49,6 +53,7 @@ def checkNuggetNumber(floorList):
     failedFloors = []
     for i in range(len(floorList)):
         floor = int(floorList[i])
+
         if floor < 0 or floor > 5:
             failedFloors.append(i)
             floorList[i] = 0
@@ -76,14 +81,25 @@ def validateActInformation(actNumber):
 
 def randomizeList(floorList, actNumber):
     numberOfActs = actNumber
+    numberOfFloors = 0
     drawPool = []
     randomizedList = []
+
+    for i in range(len(floorList)):
+        if floorList[i] != 0:
+            numberOfFloors += 1
+
+    if numberOfFloors < numberOfActs:
+        messagebox.showerror("Error",
+                             message="The number of available floors you have provided is larger than the "
+                                     "number of floors you have checked off.")
+        numberOfActs = 0
+
     for i in range(len(floorList)):
         numberOfNuggets = int(floorList[i])
         floorType = floorKey[i]
         for n in range(numberOfNuggets):
             drawPool.append(floorType)
-
     while len(randomizedList) != numberOfActs:
         drawnFloor = random.choice(drawPool)
         if drawnFloor not in randomizedList:

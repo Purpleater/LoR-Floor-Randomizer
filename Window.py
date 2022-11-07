@@ -1,4 +1,4 @@
-import NotWindow
+import NonTkinterBasedMethods
 
 from tkinter import *
 from tkinter import messagebox
@@ -6,10 +6,13 @@ from tkinter import ttk
 
 window = Tk()
 window.geometry('450x400')
+
+# create tabs
 window.title("LoR Floor Randomizer")
 tabControl = ttk.Notebook(window)
 
 # randomizer tab
+
 randomizerTab = ttk.Frame(tabControl)
 tabControl.add(randomizerTab, text="Floor Randomizer")
 
@@ -30,7 +33,7 @@ def getFloorInformation():
     floorList = [generalWorksCount, historyCount, technologyCount, literatureCount, artCount,
                  natSciCount, languageCount, socSciCount,
                  philosophyCount, religionCount]
-    NotWindow.setArrayValues(floorList)
+    NonTkinterBasedMethods.setArrayValues(floorList)
 
     return floorList
 
@@ -38,7 +41,7 @@ def getFloorInformation():
 def getActInformation():
     numberOfActs = actsNumber.get()
 
-    if NotWindow.validateActInformation(numberOfActs) == 0:
+    if NonTkinterBasedMethods.validateActInformation(numberOfActs) == 0:
         messagebox.showerror("Error",
                              message="You have provided an invalid input for the number of acts, please try again")
         actsNumber.delete(0, END)
@@ -47,17 +50,28 @@ def getActInformation():
 
 
 def generateRandomFloorList():
+    # hide the roland.
+
+    tabControl.hide(rolandTab)
+
     # check floor information
+
     acquiredFloorValues = getFloorInformation()
-    NotWindow.validateInformation(acquiredFloorValues)
-    NotWindow.checkNuggetNumber(acquiredFloorValues)
+    NonTkinterBasedMethods.validateInformation(acquiredFloorValues)
+    NonTkinterBasedMethods.checkNuggetNumber(acquiredFloorValues)
+
+    if int(generalEntry.get()) == 9:
+        messagebox.showerror("Error?", message="You input the wrong number for the Floor of General Works, but hey, "
+                                               "at least you found a special tab because of it? ")
+        showRoland()
 
     # get number of acts
     numberOfActs = getActInformation()
 
     # randomize information
 
-    randomizedList = NotWindow.randomizeList(acquiredFloorValues, numberOfActs)
+    randomizedList = NonTkinterBasedMethods.randomizeList(acquiredFloorValues, numberOfActs)
+
     randomizedFloorList.delete(0, END)
     for i in range(len(randomizedList)):
         randomizedFloorList.insert(i, randomizedList[i])
@@ -66,50 +80,60 @@ def generateRandomFloorList():
 def updatePage():
     if generalCheckVar.get() == 0:
         generalEntry.config(state=DISABLED)
+        generalEntry.delete(0, END)
     else:
         generalEntry.config(state=NORMAL)
 
     if historyCheckVar.get() == 0:
+        historyEntry.delete(0, END)
         historyEntry.config(state=DISABLED)
     else:
         historyEntry.config(state=NORMAL)
 
     if technologyCheckVar.get() == 0:
+        technologyEntry.delete(0, END)
         technologyEntry.config(state=DISABLED)
     else:
         technologyEntry.config(state=NORMAL)
 
     if litCheckVar.get() == 0:
+        litEntry.delete(0, END)
         litEntry.config(state=DISABLED)
     else:
         litEntry.config(state=NORMAL)
 
     if artCheckVar.get() == 0:
+        artEntry.delete(0, END)
         artEntry.config(state=DISABLED)
     else:
         artEntry.config(state=NORMAL)
 
     if natSciCheckVar.get() == 0:
+        natSciEntry.delete(0, END)
         natSciEntry.config(state=DISABLED)
     else:
         natSciEntry.config(state=NORMAL)
 
     if languageCheckVar.get() == 0:
+        languageEntry.delete(0, END)
         languageEntry.config(state=DISABLED)
     else:
         languageEntry.config(state=NORMAL)
 
     if socSciCheckVar.get() == 0:
+        socSciEntry.delete(0, END)
         socSciEntry.config(state=DISABLED)
     else:
         socSciEntry.config(state=NORMAL)
 
     if philosophyCheckVar.get() == 0:
+        philosophyEntry.delete(0, END)
         philosophyEntry.config(state=DISABLED)
     else:
         philosophyEntry.config(state=NORMAL)
 
     if religionCheckVar.get() == 0:
+        religionEntry.delete(0, END)
         religionEntry.config(state=DISABLED)
     else:
         religionEntry.config(state=NORMAL)
@@ -162,12 +186,20 @@ def resetConfig():
     randomizedFloorList.delete(0, END)
 
 
+def showRoland():
+    tabControl.add(rolandTab)
+
+
+def exitProgram():
+    window.destroy()
+
+
 # frames
 
-informationFrame = Frame(window)
-selectDeselectFrame = Frame(window)
-updateFrame = Frame(window)
-randomizedFloorsFrame = Frame(window)
+informationFrame = Frame(randomizerTab)
+selectDeselectFrame = Frame(randomizerTab)
+updateFrame = Frame(randomizerTab)
+randomizedFloorsFrame = Frame(randomizerTab)
 numberOfActsFrame = Frame(randomizedFloorsFrame)
 # titles
 
@@ -316,10 +348,10 @@ religionEntry = Entry(informationFrame, width=10)
 religionEntry.grid(row=10, column=2)
 religionEntry.config(state=DISABLED)
 
-# numbers of acts frame
+# numbers of floors
 
 
-actsLabel = Label(numberOfActsFrame, text="Please provide the number \nof acts in the reception: ")
+actsLabel = Label(numberOfActsFrame, text="Please provide the number \nof floors available for the reception: ")
 actsNumber = Entry(numberOfActsFrame)
 
 actsLabel.grid(row=0, column=0)
@@ -356,11 +388,62 @@ updateFrame.grid(row=2, column=0, pady=5)
 numberOfActsFrame.grid(row=0, column=0, pady=5)
 randomizedFloorsFrame.grid(row=0, column=1, pady=5)
 
-# tabs
-
-
 # instructions tab
+instructionsTab = ttk.Frame(tabControl)
+tabControl.add(instructionsTab, text="Program Instructions")
 
+# general information frame (with title and corresponding instructions
+generalFrame = Frame(instructionsTab)
+titleLabel = Label(generalFrame, text="How to Use", padx=5, font="Arial 12 underline")
+generalInformation = Label(generalFrame, text="Check the boxes of the floors that you have, then fill in the\n "
+                                              "number of employees/nuggets you have on the corresponding\n "
+                                              "floor. Input the number of floors available for the reception,\n "
+                                              "then click 'Randomize Floors'")
+titleLabel.grid(row=0, column=0)
+generalInformation.grid(row=1, column=0)
+
+# frame with the information explaining what the buttons do
+buttonFrame = Frame(instructionsTab)
+checkUncheckTitle = Label(buttonFrame, text="Check/Uncheck Buttons", font="Arial 10 underline")
+availabilityTitle = Label(buttonFrame, text="Update Floor Availability", font="Arial 10 underline")
+resetTitle = Label(buttonFrame, text="Reset Configurations", font="Arial 10 underline")
+
+checkUncheckText = Label(buttonFrame, text="Both of these buttons are self explanatory. Unchecking a floor will\n "
+                                           "delete the employee number within the corresponding textbox, however.")
+availabilityText = Label(buttonFrame, text="The form will not immediately update upon checking/unchecking boxes.\n"
+                                           "Use this button to refresh the form.")
+resetText = Label(buttonFrame, text="This is similar to the 'Uncheck All' button, except that it resets\n"
+                                    "everything rather than just the floor checkboxes and textboxes.")
+checkUncheckTitle.grid(row=0, column=0)
+checkUncheckText.grid(row=1, column=0)
+availabilityTitle.grid(row=2, column=0)
+availabilityText.grid(row=3, column=0)
+resetTitle.grid(row=4, column=0)
+resetText.grid(row=5, column=0)
+# pack frames
+generalFrame.grid(row=0, column=0, pady=3)
+buttonFrame.grid(row=1, column=0, pady=3)
+
+# exit tab
+
+exitTab = ttk.Frame(tabControl)
+tabControl.add(exitTab, text="Exit Tab")
+
+exitButton = Button(exitTab, text="Exit Program", command=exitProgram, padx=50)
+exitButton.pack(side=LEFT, padx=130)
+# roland.
+rolandTab = ttk.Frame(tabControl)
+tabControl.add(rolandTab, text="Roland.")
+p = PhotoImage(file=r'roland.png')
+pi = p.subsample(1, 1)
+
+rolandLabel = Label(rolandTab, image=pi).pack(side=TOP)
+tabControl.hide(rolandTab)
+
+# pack tabs
+tabControl.pack(expand=1, fill="both")
 
 # start the application
+
+
 window.mainloop()
